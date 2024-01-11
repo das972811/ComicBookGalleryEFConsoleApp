@@ -14,4 +14,13 @@ public class Context : DbContext
 
         optionsBuilder.UseSqlServer(connectionString);
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<ComicBook>()
+            .HasOne(cb => cb.Series)
+            .WithMany(cb => cb.ComicBooks)
+            .HasForeignKey(cb => cb.SeriesId)
+            .IsRequired();
+    }
 }
