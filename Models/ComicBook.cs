@@ -8,4 +8,6 @@ public class ComicBook
     public int IssueNumber { get; set; }
     public string Description { get; set; } = null!;
     public DateTime PublishedOn { get; set; }
+
+    public decimal? AverageRating { get; set; }
 }
