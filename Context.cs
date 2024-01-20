@@ -28,6 +28,8 @@ public class Context : DbContext
         //     .WithMany(cb => cb.ComicBooks)
         //     .HasForeignKey(cb => cb.SeriesId)
         //     .IsRequired();
-        
+        modelBuilder.Entity<ComicBook>()
+            .Property(cb => cb.AverageRating)
+            .HasPrecision(5, 2);
     }
 }
