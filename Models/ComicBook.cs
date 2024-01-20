@@ -4,7 +4,7 @@ public class ComicBook
 {
     public ComicBook()
     {
-        Artists = new List<Artist>();
+        Artists = new List<ComicBookArtist>();
     }
 
     // Id, ID, ComicBookId, ComicBookID
@@ -15,7 +15,7 @@ public class ComicBook
     public string Description { get; set; } = null!;
     public DateTime PublishedOn { get; set; }
     public decimal? AverageRating { get; set; }
-    public ICollection<Artist> Artists { get; set; } = null!;
+    public ICollection<ComicBookArtist> Artists { get; set; } = null!;
 
     public string DisplayText
     {
@@ -23,5 +23,13 @@ public class ComicBook
         {
             return $"{Series?.Title} #{IssueNumber}";
         }
+    }
+
+    public void AddArtist(Artist artist, Role role)
+    {
+        Artists.Add(new ComicBookArtist() {
+            Artist = artist,
+            Role = role
+        });
     }
 }
