@@ -15,12 +15,19 @@ public class Context : DbContext
         optionsBuilder.UseSqlServer(connectionString);
     }
 
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        base.ConfigureConventions(configurationBuilder);
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<ComicBook>()
-            .HasOne(cb => cb.Series)
-            .WithMany(cb => cb.ComicBooks)
-            .HasForeignKey(cb => cb.SeriesId)
-            .IsRequired();
+        base.OnModelCreating(modelBuilder);
+        // modelBuilder.Entity<ComicBook>()
+        //     .HasOne(cb => cb.Series)
+        //     .WithMany(cb => cb.ComicBooks)
+        //     .HasForeignKey(cb => cb.SeriesId)
+        //     .IsRequired();
+        
     }
 }
