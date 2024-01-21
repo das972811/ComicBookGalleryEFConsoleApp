@@ -11,8 +11,9 @@ public class Context : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         string connectionString = "Server=(localdb)\\mylocaldb;Database=ComicBookGallery;Trusted_Connection=True;";
-
+        
         optionsBuilder.UseSqlServer(connectionString);
+        // optionsBuilder.LogTo(Console.WriteLine);
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
@@ -22,6 +23,7 @@ public class Context : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Using the fluent Api
         base.OnModelCreating(modelBuilder);
         // modelBuilder.Entity<ComicBook>()
         //     .HasOne(cb => cb.Series)

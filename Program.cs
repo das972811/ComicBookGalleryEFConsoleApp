@@ -1,6 +1,61 @@
-﻿using ComicBookGallery;
+﻿using System.Runtime.CompilerServices;
+using ComicBookGallery;
 using ComicBookGallery.Models;
 using Microsoft.EntityFrameworkCore;
+
+Func<Context> GetContext = () => new Context();
+
+Action<ComicBook> AddComicBook = comicBook =>
+{
+    using (Context context = GetContext())
+    {
+        context.ComicBooks.Add(comicBook);
+
+        // Prevents Duplication
+
+        if (comicBook.Series != null && comicBook.Series.Id > 0)
+        {
+            context.Entry(comicBook.Series).State = EntityState.Unchanged;
+        }
+
+        foreach (ComicBookArtist artist in comicBook.Artists)
+        {
+            if (artist.Artist != null && artist.Artist.Id > 0)
+            {
+                context.Entry(artist.Artist).State = EntityState.Unchanged;
+            }
+
+            if (artist.Role != null && artist.Role.Id > 0)
+            {
+                context.Entry(artist.Role).State = EntityState.Unchanged;
+            }
+        }
+        context.SaveChanges();
+    }
+};
+
+Action<ComicBook> UpdateComicBook = ComicBook =>
+{
+    using (Context context = GetContext())
+    {
+        context.ComicBooks.Attach(ComicBook);
+        var comicBookEntry = context.Entry(ComicBook);
+        comicBookEntry.State = EntityState.Modified;
+        comicBookEntry.Property(p => p.IssueNumber).IsModified = false;
+
+        context.SaveChanges();
+    }
+};
+
+Action<int> DeleteComicBook = comicBookId =>
+{
+    using (Context context = GetContext())
+    {
+        var comicBook = new ComicBook() { Id = comicBookId };
+        context.Entry(comicBook).State = EntityState.Deleted;
+        context.SaveChanges();
+    }
+};
 
 using (var context = new Context())
 {
@@ -42,6 +97,7 @@ using (var context = new Context())
 
     // context.SaveChanges();
 
+    // Eager Loading
     var comicBooks = context.ComicBooks
         .Include(cb => cb.Series)
         .Include(cb => cb.Artists)
@@ -52,6 +108,14 @@ using (var context = new Context())
     
     foreach (var comicBook in comicBooks)
     {
+        // Explict Loading
+        if (comicBook.Series == null)
+        {
+            context.Entry(comicBook)
+                .Reference(cb => cb.Series)
+                .Load();
+        }
+
         var artistRoleNames = comicBook.Artists.Select(a => $"{a.Artist.Name} - {a.Role.Name}");
         var artistRolesDisplayText = string.Join(", ", artistRoleNames);
 
